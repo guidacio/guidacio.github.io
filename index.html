@@ -1,107 +1,160 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Radio 🔥</title>
+  <meta charset="UTF-8">
+  <title>🎲 Generador de Temas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-body {
-  background: #111;
-  color: white;
-  font-family: Arial, sans-serif;
-  text-align: center;
-  padding-top: 50px;
-}
+  <style>
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #111;
+      color: #fff;
+      text-align: center;
+    }
 
-button {
-  font-size: 18px;
-  margin: 10px;
-  padding: 10px 20px;
-  cursor: pointer;
-}
-</style>
+    h1 {
+      margin-bottom: 25px;
+    }
+
+    button {
+      padding: 14px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background-color: #00e676;
+      color: #000;
+    }
+
+    button:hover {
+      background-color: #1aff8c;
+    }
+
+    #tema {
+      margin-top: 30px;
+      font-size: 20px;
+      min-height: 70px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .gif {
+      margin-top: 35px;
+      width: 100%;
+      max-width: 320px;
+      border-radius: 14px;
+    }
+  </style>
 </head>
-
 <body>
 
-<h1>📻 Online</h1>
-<p id="now">Presioná Play</p>
+  <h1>🎲 Tema de conversación</h1>
 
-<button id="prev">⏮️</button>
-<button id="play">▶️</button>
-<button id="next">⏭️</button>
+  <button onclick="nuevoTema()">Nuevo tema</button>
 
-<audio id="player"></audio>
+  <p id="tema">Tocá el botón 👆</p>
 
-<script>
-const canciones = [
-  "cancion1.mp3",
-  "cancion2.mp3",
-  "cancion3.mp3",
-  "cancion4.mp3"
-];
+  <img
+    class="gif"
+    src="https://media.giphy.com/media/Cr3FW0nFbdkmBMDj22/giphy.gif"
+    alt="momo bailando"
+  >
 
-let orden = [];
-let indice = 0;
-let reproduciendo = false;
+  <!-- Sonido -->
+  <audio id="clickSound">
+    <source src="https://www.soundjay.com/buttons/sounds/button-16.mp3" type="audio/mpeg">
+  </audio>
 
-const player = document.getElementById("player");
-const texto = document.getElementById("now");
-const playBtn = document.getElementById("play");
+  <script>
+    const temasOriginales = [
+      "¿Qué cosa está totalmente sobrevalorada?",
+      "¿Cuál fue tu peor compra?",
+      "¿Cuál fue tu mejor compra?",
+      "¿Qué talento inútil tenés?",
+      "¿Qué moda no entendés?",
+      "¿Qué te da bronca sin razón?",
+      "¿Qué te pone de buen humor al instante?",
+      "¿Qué comida odiás?",
+      "¿Dulce o salado?",
+      "¿Playa o montaña?",
+      "¿Frío o calor?",
+      "¿Día o noche?",
+      "¿Qué emoji usás más?",
+      "¿Qué combinación rara te gusta?",
+      "¿Qué música estás escuchando últimamente?",
+      "¿Cuál es tu comida favorita?",
+      "¿Tu gusto de helado favorito?",
+      "¿Qué comida te trae recuerdos?",
+      "¿Qué película o serie te marcó?",
+      "¿Podrías vivir sin redes sociales?",
+      "¿Tener suerte infinita o habilidad infinita?",
+      "¿Qué harías con un millón por un día?",
+      "¿Qué superpoder elegirías?",
+      "¿Qué cosa debería desaparecer?",
+      "¿Qué cosa debería volver?",
+      "¿Nos podrían reemplazar los robots?",
+      "¿Creés que los extraterrestres existen?",
+      "¿Qué materia te gustaba más en el cole?",
+      "¿Qué cosas que hace la gente te molestan?",
+      "¿Introvertido o extrovertido? ¿Por qué?",
+      "¿Ser invisible un día o que todos te miren una semana?",
+      "¿Qué es peor: llegar tarde o llegar demasiado temprano?",
+      "¿Ser malo en todo o excelente en algo inútil?",
+      "¿Preferís tener razón o tener paz?",
+      "¿Cagar en casa ajena o no llegar al baño en la tuya?",
+      "¿Qué es peor: quedarte pelado o engordar de golpe?",
+      "¿Tener voz de nene para siempre o cara de viejo a los 25?",
+      "¿Mear una uva o cagar un melón?",
+      "¿Ser pobre pero fachero o feo pero con plata?",
+      "¿Qué es más humillante: que te dejen por WhatsApp o por un amigo?",
+      "¿Qué te da miedo?",
+      "¿Cuáles creés que son tus debilidades?",
+      "¿Cuáles son tus fortalezas?",
+      "¿Qué cosa te gustaría aprender?",
+      "¿Qué harías si fueras del sexo opuesto por un día?",
+      "¿Qué pensás sobre el uso de la marihuana?",
+      "¿Preferís saber cuándo te vas a morir o cómo?",
+      "¿Qué duele más: una patada en los huevos o que te digan “sos como un hermano”?",
+      "¿Qué cosa te haría feliz ahora mismo?",
+      "¿Si pudieras cambiar algo chico de tu vida, qué sería?",
+      "¿Quién gana: 1 gorila o 100 hombres?"
+    ];
 
-function mezclar() {
-  orden = [...canciones];
-  for (let i = orden.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [orden[i], orden[j]] = [orden[j], orden[i]];
-  }
-  indice = 0;
-}
+    let temasDisponibles = [...temasOriginales];
+    let animando = false;
 
-function cargarCancion() {
-  player.src = orden[indice];
-  texto.textContent = "Sonando: " + orden[indice];
-}
+    function nuevoTema() {
+      if (animando) return;
+      animando = true;
 
-function playPause() {
-  if (!reproduciendo) {
-    if (orden.length === 0) mezclar();
-    cargarCancion();
-    player.play();
-    playBtn.textContent = "⏸️";
-    reproduciendo = true;
-  } else {
-    player.pause();
-    playBtn.textContent = "▶️";
-    reproduciendo = false;
-  }
-}
+      document.getElementById("clickSound").play();
 
-function siguiente() {
-  indice++;
-  if (indice >= orden.length) {
-    mezclar();
-  }
-  cargarCancion();
-  player.play();
-  reproduciendo = true;
-  playBtn.textContent = "⏸️";
-}
+      if (temasDisponibles.length === 0) {
+        temasDisponibles = [...temasOriginales];
+      }
 
-function anterior() {
-  if (indice > 0) {
-    indice--;
-    cargarCancion();
-    player.play();
-  }
-}
+      let vueltas = 0;
+      const slot = setInterval(() => {
+        const random = Math.floor(Math.random() * temasOriginales.length);
+        document.getElementById("tema").textContent = temasOriginales[random];
+        vueltas++;
+      }, 80);
 
-player.addEventListener("ended", siguiente);
+      setTimeout(() => {
+        clearInterval(slot);
 
-document.getElementById("play").onclick = playPause;
-document.getElementById("next").onclick = siguiente;
-document.getElementById("prev").onclick = anterior;
-</script>
+        const index = Math.floor(Math.random() * temasDisponibles.length);
+        const elegido = temasDisponibles.splice(index, 1)[0];
+
+        document.getElementById("tema").textContent = elegido;
+        animando = false;
+      }, 1000);
+    }
+  </script>
 
 </body>
 </html>
