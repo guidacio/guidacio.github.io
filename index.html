@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Radio 🔥</title>
+
+<style>
+body {
+  background: #111;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding-top: 50px;
+}
+
+button {
+  font-size: 18px;
+  margin: 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<h1>📻 Online</h1>
+<p id="now">Presioná Play</p>
+
+<button id="prev">⏮️</button>
+<button id="play">▶️</button>
+<button id="next">⏭️</button>
+
+<audio id="player"></audio>
+
+<script>
+const canciones = [
+  "cancion1.mp3",
+  "cancion2.mp3",
+  "cancion3.mp3",
+  "cancion4.mp3"
+];
+
+let orden = [];
+let indice = 0;
+let reproduciendo = false;
+
+const player = document.getElementById("player");
+const texto = document.getElementById("now");
+const playBtn = document.getElementById("play");
+
+function mezclar() {
+  orden = [...canciones];
+  for (let i = orden.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [orden[i], orden[j]] = [orden[j], orden[i]];
+  }
+  indice = 0;
+}
+
+function cargarCancion() {
+  player.src = orden[indice];
+  texto.textContent = "Sonando: " + orden[indice];
+}
+
+function playPause() {
+  if (!reproduciendo) {
+    if (orden.length === 0) mezclar();
+    cargarCancion();
+    player.play();
+    playBtn.textContent = "⏸️";
+    reproduciendo = true;
+  } else {
+    player.pause();
+    playBtn.textContent = "▶️";
+    reproduciendo = false;
+  }
+}
+
+function siguiente() {
+  indice++;
+  if (indice >= orden.length) {
+    mezclar();
+  }
+  cargarCancion();
+  player.play();
+  reproduciendo = true;
+  playBtn.textContent = "⏸️";
+}
+
+function anterior() {
+  if (indice > 0) {
+    indice--;
+    cargarCancion();
+    player.play();
+  }
+}
+
+player.addEventListener("ended", siguiente);
+
+document.getElementById("play").onclick = playPause;
+document.getElementById("next").onclick = siguiente;
+document.getElementById("prev").onclick = anterior;
+</script>
+
+</body>
+</html>
